@@ -3,13 +3,14 @@
 
 .sorting-visualizer {
   width: 100%;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 20px auto;
   padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   background-color: #f9f9f9;
+  box-sizing: border-box;
 }
 
 .sorting-visualizer h2 {
@@ -21,6 +22,7 @@
 .sorting-visualizer svg {
   width: 100%;
   height: auto;
+  min-width: 0; /* Remove fixed minimum width to prevent overflow */
 }
 
 .bar {
@@ -34,7 +36,12 @@
 }
 
 .x-axis, .y-axis {
-  font-size: 12px;
+  font-size: 8px; /* Further reduce font size to make axis narrower */
+  fill: #333; /* Set axis label color to dark gray */
+}
+
+.x-axis text, .y-axis text {
+  fill: #333; /* Ensure axis label text color is dark gray */
 }
 
 .x-axis path,
@@ -49,4 +56,51 @@
   font-size: 18px;
   font-weight: bold;
   fill: #333;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .sorting-visualizer {
+    padding: 10px;
+    margin: 10px auto;
+    max-width: 100%;
+  }
+  
+  .sorting-visualizer svg {
+    min-width: 0; /* Remove fixed minimum width for smaller screens */
+    max-width: 100%;
+  }
+  
+  .x-axis, .y-axis {
+    font-size: 6px; /* Further reduce font size for axes on mobile */
+    fill: #333; /* Ensure axis labels are visible on mobile */
+  }
+  
+  .x-axis text, .y-axis text {
+    fill: #333; /* Ensure axis label text color is dark gray on mobile */
+  }
+  
+  .chart-title {
+    font-size: 16px; /* Smaller title font size on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .sorting-visualizer svg {
+    min-width: 250px; /* Further adjust for very small screens */
+  }
+  
+  .label {
+    font-size: 10px; /* Smaller label font size on very small screens */
+    fill: #333; /* Ensure text is visible on mobile */
+  }
+  
+  .x-axis, .y-axis {
+    font-size: 5px; /* Further reduce font size for axes on very small screens */
+    fill: #333; /* Ensure axis labels are visible on very small screens */
+  }
+  
+  .x-axis text, .y-axis text {
+    fill: #333; /* Ensure axis label text color is dark gray on very small screens */
+  }
 }
