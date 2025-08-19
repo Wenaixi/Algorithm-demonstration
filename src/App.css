@@ -194,7 +194,6 @@ button:disabled {
     font-size: 0.9rem;
   }
 }
-}
 
 /* Additional mobile optimization for very small screens */
 @media (max-width: 480px) {
