@@ -30,7 +30,7 @@ Interactive visualization of sorting algorithms.
 
 3. Install dependencies:
    ```
-   npm install
+   npm install --registry https://registry.npmmirror.com/
    ```
 
 ## Usage
