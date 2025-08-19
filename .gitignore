@@ -25,3 +25,8 @@ dist-ssr
 
 # Custom rule files
 .rule/
+
+# Additional ignored files and directories
+algorithm-demonstration@0.0.0
+npm
+vite
