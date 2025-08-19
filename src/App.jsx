@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import SortingVisualizer from './components/SortingVisualizer';
+import Footer from './components/Footer';
 import { generateRandomArray } from './utils/dataGenerator';
 import { bubbleSortSteps } from './algorithms/bubbleSort';
 import { selectionSortSteps } from './algorithms/selectionSort';
@@ -22,6 +23,7 @@ function App() {
   const [currentStep, setCurrentStep] = useState(0);
   const [totalSteps, setTotalSteps] = useState(0);
   const [steps, setSteps] = useState([]);
+
   
   const sortingTimeoutRef = useRef(null);
   
@@ -98,20 +100,21 @@ function App() {
   };
   
   const handleSort = () => {
-    if (isSorting && !isPaused) return;
+    if (isSorting && !isPaused) return; // 正在排序中，不做任何操作
     
-    // If we're paused, resume sorting
-    if (isPaused) {
+    // 如果已暂停，继续排序
+    if (isPaused && isSorting) {
       setIsPaused(false);
       visualizeSorting();
       return;
     }
     
+    // 开始新的排序
     setIsSorting(true);
-    setIsPaused(false);
+    setIsPaused(true); // 初始状态为暂停，显示"Begin"
     setCurrentStep(0);
     
-    // Select the appropriate sorting algorithm with steps
+    // 选择对应的排序算法
     let sortFunction;
     switch (algorithm) {
       case 'bubble':
@@ -133,14 +136,11 @@ function App() {
         sortFunction = bubbleSortSteps;
     }
     
-    // Execute the sorting algorithm with steps
+    // 执行排序算法
     const result = sortFunction(data);
     setSteps(result.steps);
     setTotalSteps(result.steps.length);
     setStats(result.stats);
-    
-    // Start visualization
-    visualizeSorting();
   };
   
   const visualizeSorting = useCallback(() => {
@@ -197,7 +197,7 @@ function App() {
   
   // Effect to handle step changes
   useEffect(() => {
-    if (isSorting && !isPaused && currentStep < totalSteps) {
+    if (isSorting && !isPaused && currentStep <= totalSteps) {
       visualizeSorting();
     }
     
@@ -294,7 +294,7 @@ function App() {
           
           <div className="control-group buttons">
             <button onClick={handleSort} disabled={isSorting && !isPaused}>
-              {isSorting && !isPaused ? 'Sorting...' : isPaused ? 'Resume' : 'Sort'}
+              {isSorting && !isPaused ? 'Sorting...' : isPaused && isSorting ? 'Begin' : 'Sort'}
             </button>
             <button onClick={handlePause} disabled={!isSorting || isPaused}>
               Pause
@@ -318,6 +318,7 @@ function App() {
         
 
       </main>
+      <Footer />
     </div>
   );
 }
