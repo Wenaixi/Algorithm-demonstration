@@ -27,7 +27,7 @@ This project is a sorting algorithm visualization tool designed to demonstrate h
 ## Getting Started
 
 1. Clone the repository
-2. Install dependencies: `npm install`
+2. Install dependencies: `npm install --registry https://registry.npmmirror.com/`
 3. Run the development server: `npm run dev`
 4. Open your browser to http://localhost:3003
 
