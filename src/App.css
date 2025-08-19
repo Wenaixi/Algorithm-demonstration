@@ -194,3 +194,35 @@ button:disabled {
     font-size: 0.9rem;
   }
 }
+}
+
+/* Additional mobile optimization for very small screens */
+@media (max-width: 480px) {
+  .App-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .App-header p {
+    font-size: 0.9rem;
+  }
+  
+  main {
+    padding: 10px;
+  }
+  
+  .controls {
+    padding: 10px;
+  }
+  
+  .stats {
+    padding: 10px;
+  }
+  
+  .stats h3 {
+    font-size: 1.1rem;
+  }
+  
+  .stats p {
+    font-size: 0.9rem;
+  }
+}
