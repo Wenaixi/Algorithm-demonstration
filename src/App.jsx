@@ -1,10 +1,11 @@
 // src/App.jsx
 // Wenxi Developer Signature
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import SortingVisualizer from './components/SortingVisualizer';
 import PerformanceChart from './components/PerformanceChart';
+import StockChart from './components/StockChart';
 import { generateRandomArray } from './utils/dataGenerator';
 import { bubbleSort } from './algorithms/bubbleSort';
 import { selectionSort } from './algorithms/selectionSort';
@@ -21,18 +22,41 @@ function App() {
   const [stats, setStats] = useState({ comparisons: 0, swaps: 0, time: 0 });
   const [performanceData, setPerformanceData] = useState([]);
   const [showPerformanceChart, setShowPerformanceChart] = useState(false);
+  const [stockData, setStockData] = useState([]);
   
-  // Initialize with random data
-  useEffect(() => {
-    resetData();
-  }, []);
-  
-  const resetData = () => {
+  const resetData = useCallback(() => {
     const newData = generateRandomArray(dataArraySize);
     setData(newData);
     setStats({ comparisons: 0, swaps: 0, time: 0 });
     setPerformanceData([]);
     setShowPerformanceChart(false);
+  }, [dataArraySize]);
+  
+  // Initialize with random data
+  useEffect(() => {
+    resetData();
+    generateStockData();
+  }, [resetData]);
+  
+  const generateStockData = () => {
+    // Generate sample stock data for the last 30 days
+    const today = new Date();
+    const stockData = [];
+    
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      
+      // Generate a random price between 100 and 200
+      const price = (Math.random() * 100 + 100).toFixed(2);
+      
+      stockData.push({
+        date: date.toISOString().split('T')[0],
+        price: price
+      });
+    }
+    
+    setStockData(stockData);
   };
   
   const handleAlgorithmChange = (e) => {
@@ -205,6 +229,8 @@ function App() {
         {showPerformanceChart && (
           <PerformanceChart performanceData={performanceData} />
         )}
+        
+        <StockChart data={stockData} />
       </main>
     </div>
   );
