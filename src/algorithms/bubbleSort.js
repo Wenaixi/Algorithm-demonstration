@@ -42,24 +42,24 @@ export function bubbleSortSteps(array) {
   const steps = [];
   const startTime = performance.now();
   
-  // Add initial state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  // Add initial state with compact representation
+  steps.push({ type: 'init', array: [...arr] });
   
   const n = arr.length;
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
       stats.comparisons++;
       
-      // Add step for comparison
-      steps.push({ array: [...arr], comparing: [j, j + 1], swapping: [] });
+      // Add step for comparison (compact representation)
+      steps.push({ type: 'compare', indices: [j, j + 1] });
       
       if (arr[j] > arr[j + 1]) {
         // Swap elements
         [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
         stats.swaps++;
         
-        // Add step for swap
-        steps.push({ array: [...arr], comparing: [], swapping: [j, j + 1] });
+        // Add step for swap (compact representation)
+        steps.push({ type: 'swap', indices: [j, j + 1] });
       }
     }
   }
@@ -68,7 +68,7 @@ export function bubbleSortSteps(array) {
   stats.time = endTime - startTime;
   
   // Add final sorted state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  steps.push({ type: 'complete', array: [...arr] });
   
   return { steps, stats };
 }

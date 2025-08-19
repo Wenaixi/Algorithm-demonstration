@@ -45,8 +45,8 @@ export function quickSortSteps(array) {
   const arr = [...array];
   const steps = [];
   
-  // Add initial state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  // Add initial state with compact representation
+  steps.push({ type: 'init', array: [...arr] });
   
   // Internal recursive function
   function quickSortRecursive(low, high) {
@@ -72,34 +72,34 @@ export function quickSortSteps(array) {
         i++;
         // Swap elements
         if (i !== j) {
-          // Add step for comparison
-          steps.push({ array: [...arr], comparing: [i, j], swapping: [] });
+          // Add step for comparison (compact representation)
+          steps.push({ type: 'compare', indices: [i, j] });
           
           [arr[i], arr[j]] = [arr[j], arr[i]];
           stats.swaps++;
           
-          // Add step for swap
-          steps.push({ array: [...arr], comparing: [], swapping: [i, j] });
+          // Add step for swap (compact representation)
+          steps.push({ type: 'swap', indices: [i, j] });
         } else {
           // Add step for comparison (no swap)
-          steps.push({ array: [...arr], comparing: [i, j], swapping: [] });
+          steps.push({ type: 'compare', indices: [i, j] });
         }
       } else {
         // Add step for comparison (no swap)
-        steps.push({ array: [...arr], comparing: [i, j], swapping: [] });
+        steps.push({ type: 'compare', indices: [i, j] });
       }
     }
     
     // Swap the pivot element with the element at i+1
     if (i + 1 !== high) {
-      // Add step for pivot swap
-      steps.push({ array: [...arr], comparing: [i + 1, high], swapping: [] });
+      // Add step for pivot swap (compact representation)
+      steps.push({ type: 'compare', indices: [i + 1, high] });
       
       [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
       stats.swaps++;
       
-      // Add step for pivot swap
-      steps.push({ array: [...arr], comparing: [], swapping: [i + 1, high] });
+      // Add step for pivot swap (compact representation)
+      steps.push({ type: 'swap', indices: [i + 1, high] });
     }
     
     return i + 1;
@@ -112,7 +112,7 @@ export function quickSortSteps(array) {
   stats.time = endTime - startTime;
   
   // Add final sorted state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  steps.push({ type: 'complete', array: [...arr] });
   
   return { steps, stats };
 }

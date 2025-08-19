@@ -49,27 +49,32 @@ export function mergeSortSteps(array) {
   const startTime = performance.now();
   const steps = [];
   
-  // Add initial state
-  steps.push({ array: [...array], comparing: [], swapping: [] });
+  // Add initial state with compact representation
+  steps.push({ type: 'init', array: [...array] });
   
   // Create a copy of the array to avoid mutating the original
   const arr = [...array];
   
   // Internal recursive function
-  function mergeSortRecursive(arr) {
+  function mergeSortRecursive(arr, startIdx = 0) {
     if (arr.length <= 1) {
-      return arr;
+      return { result: arr, startIdx };
     }
     
     const mid = Math.floor(arr.length / 2);
-    const left = mergeSortRecursive(arr.slice(0, mid));
-    const right = mergeSortRecursive(arr.slice(mid));
+    const leftObj = mergeSortRecursive(arr.slice(0, mid), startIdx);
+    const rightObj = mergeSortRecursive(arr.slice(mid), startIdx + mid);
     
-    return merge(left, right);
+    return merge(leftObj, rightObj);
   }
   
   // Function to merge two sorted arrays
-  function merge(left, right) {
+  function merge(leftObj, rightObj) {
+    const left = leftObj.result;
+    const right = rightObj.result;
+    const leftStart = leftObj.startIdx;
+    const rightStart = rightObj.startIdx;
+    
     const result = [];
     let leftIndex = 0;
     let rightIndex = 0;
@@ -77,12 +82,10 @@ export function mergeSortSteps(array) {
     while (leftIndex < left.length && rightIndex < right.length) {
       stats.comparisons++;
       
-      // Add step for comparison
-      const currentArr = [...result, ...left.slice(leftIndex), ...right.slice(rightIndex)];
+      // Add step for comparison (compact representation)
       steps.push({ 
-        array: currentArr, 
-        comparing: [result.length, result.length + left.length - leftIndex], 
-        swapping: [] 
+        type: 'compare',
+        indices: [leftStart + leftIndex, rightStart + rightIndex]
       });
       
       if (left[leftIndex] <= right[rightIndex]) {
@@ -93,32 +96,47 @@ export function mergeSortSteps(array) {
         rightIndex++;
       }
       
-      // Add step for merge
-      const mergedArr = [...result, ...left.slice(leftIndex), ...right.slice(rightIndex)];
+      // Add step for merge (compact representation)
       steps.push({ 
-        array: mergedArr, 
-        comparing: [], 
-        swapping: [] 
+        type: 'merge',
+        index: leftStart + leftIndex + rightIndex - 1,
+        value: result[result.length - 1]
       });
     }
     
     // Concat remaining elements
-    const mergedResult = result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    while (leftIndex < left.length) {
+      result.push(left[leftIndex]);
+      steps.push({ 
+        type: 'merge',
+        index: leftStart + leftIndex,
+        value: left[leftIndex]
+      });
+      leftIndex++;
+    }
     
-    // Add step for final merge
-    steps.push({ array: [...mergedResult], comparing: [], swapping: [] });
+    while (rightIndex < right.length) {
+      result.push(right[rightIndex]);
+      steps.push({ 
+        type: 'merge',
+        index: rightStart + rightIndex,
+        value: right[rightIndex]
+      });
+      rightIndex++;
+    }
     
-    return mergedResult;
+    return { result, startIdx: leftStart };
   }
   
   // Execute the merge sort
-  const sortedArray = mergeSortRecursive(arr);
+  const sortedObj = mergeSortRecursive(arr);
+  const sortedArray = sortedObj.result;
   
   const endTime = performance.now();
   stats.time = endTime - startTime;
   
   // Add final sorted state
-  steps.push({ array: [...sortedArray], comparing: [], swapping: [] });
+  steps.push({ type: 'complete', array: [...sortedArray] });
   
   return { steps, stats };
 }

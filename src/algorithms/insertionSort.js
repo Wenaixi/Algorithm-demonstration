@@ -40,28 +40,28 @@ export function insertionSortSteps(array) {
   const steps = [];
   const startTime = performance.now();
   
-  // Add initial state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  // Add initial state with compact representation
+  steps.push({ type: 'init', array: [...arr] });
   
   for (let i = 1; i < arr.length; i++) {
     const key = arr[i];
     let j = i - 1;
     
-    // Add step for key selection
-    steps.push({ array: [...arr], comparing: [i], swapping: [] });
+    // Add step for key selection (compact representation)
+    steps.push({ type: 'select', indices: [i] });
     
     // Move elements that are greater than key one position ahead
     while (j >= 0 && arr[j] > key) {
       stats.comparisons++;
       
-      // Add step for comparison
-      steps.push({ array: [...arr], comparing: [j, j + 1], swapping: [] });
+      // Add step for comparison (compact representation)
+      steps.push({ type: 'compare', indices: [j, j + 1] });
       
       arr[j + 1] = arr[j];
       stats.swaps++;
       
-      // Add step for shift
-      steps.push({ array: [...arr], comparing: [], swapping: [j, j + 1] });
+      // Add step for shift (compact representation)
+      steps.push({ type: 'shift', index: j + 1, value: arr[j + 1] });
       
       j = j - 1;
     }
@@ -72,15 +72,15 @@ export function insertionSortSteps(array) {
     // Count the final comparison that broke the while loop
     if (j >= 0) stats.comparisons++;
     
-    // Add step for insertion
-    steps.push({ array: [...arr], comparing: [], swapping: [] });
+    // Add step for insertion (compact representation)
+    steps.push({ type: 'insert', index: j + 1, value: arr[j + 1] });
   }
   
   const endTime = performance.now();
   stats.time = endTime - startTime;
   
   // Add final sorted state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  steps.push({ type: 'complete', array: [...arr] });
   
   return { steps, stats };
 }

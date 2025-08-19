@@ -61,13 +61,17 @@ const SortingVisualizer = ({ data, algorithm, currentStep }) => {
       .attr("width", xScale.bandwidth())
       .attr("height", d => height - yScale(d))
       .attr("fill", (d, i) => {
-        // Highlight comparing elements
-        if (currentStep.comparing && currentStep.comparing.includes(i)) {
-          return "orange";
+        // Highlight elements based on step type
+        if (currentStep.type === 'compare' && currentStep.indices.includes(i)) {
+          return "#ff9800"; // Orange for comparing
         }
         // Highlight swapping elements
-        else if (currentStep.swapping && currentStep.swapping.includes(i)) {
-          return "red";
+        else if (currentStep.type === 'swap' && currentStep.indices.includes(i)) {
+          return "#f44336"; // Red for swapping
+        }
+        // Highlight selected elements
+        else if (currentStep.type === 'select' && currentStep.indices.includes(i)) {
+          return "#2196f3"; // Blue for selecting
         }
         // Default color
         else {
@@ -96,13 +100,17 @@ const SortingVisualizer = ({ data, algorithm, currentStep }) => {
     
     // Update bar colors when currentStep changes
     bars.attr("fill", (d, i) => {
-      // Highlight comparing elements
-      if (currentStep.comparing && currentStep.comparing.includes(i)) {
-        return "orange";
+      // Highlight elements based on step type
+      if (currentStep.type === 'compare' && currentStep.indices.includes(i)) {
+        return "#ff9800"; // Orange for comparing
       }
       // Highlight swapping elements
-      else if (currentStep.swapping && currentStep.swapping.includes(i)) {
-        return "red";
+      else if (currentStep.type === 'swap' && currentStep.indices.includes(i)) {
+        return "#f44336"; // Red for swapping
+      }
+      // Highlight selected elements
+      else if (currentStep.type === 'select' && currentStep.indices.includes(i)) {
+        return "#2196f3"; // Blue for selecting
       }
       // Default color
       else {

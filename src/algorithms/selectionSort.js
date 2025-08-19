@@ -42,8 +42,8 @@ export function selectionSortSteps(array) {
   const steps = [];
   const startTime = performance.now();
   
-  // Add initial state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  // Add initial state with compact representation
+  steps.push({ type: 'init', array: [...arr] });
   
   const n = arr.length;
   for (let i = 0; i < n - 1; i++) {
@@ -53,8 +53,8 @@ export function selectionSortSteps(array) {
     for (let j = i + 1; j < n; j++) {
       stats.comparisons++;
       
-      // Add step for comparison
-      steps.push({ array: [...arr], comparing: [j, minIndex], swapping: [] });
+      // Add step for comparison (compact representation)
+      steps.push({ type: 'compare', indices: [j, minIndex] });
       
       if (arr[j] < arr[minIndex]) {
         minIndex = j;
@@ -66,19 +66,19 @@ export function selectionSortSteps(array) {
       [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
       stats.swaps++;
       
-      // Add step for swap
-      steps.push({ array: [...arr], comparing: [], swapping: [i, minIndex] });
+      // Add step for swap (compact representation)
+      steps.push({ type: 'swap', indices: [i, minIndex] });
     }
     
-    // Add step for selection
-    steps.push({ array: [...arr], comparing: [], swapping: [] });
+    // Add step for selection (using array update)
+    steps.push({ type: 'selection', array: [...arr] });
   }
   
   const endTime = performance.now();
   stats.time = endTime - startTime;
   
   // Add final sorted state
-  steps.push({ array: [...arr], comparing: [], swapping: [] });
+  steps.push({ type: 'complete', array: [...arr] });
   
   return { steps, stats };
 }

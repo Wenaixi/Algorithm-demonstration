@@ -51,7 +51,39 @@ function App() {
 
   
   const handleAlgorithmChange = (e) => {
-    setAlgorithm(e.target.value);
+    const newAlgorithm = e.target.value;
+    setAlgorithm(newAlgorithm);
+    
+    // If sorting is paused, recompute steps for the new algorithm
+    if (isPaused && isSorting) {
+      let sortFunction;
+      switch (newAlgorithm) {
+        case 'bubble':
+          sortFunction = bubbleSortSteps;
+          break;
+        case 'selection':
+          sortFunction = selectionSortSteps;
+          break;
+        case 'insertion':
+          sortFunction = insertionSortSteps;
+          break;
+        case 'quick':
+          sortFunction = quickSortSteps;
+          break;
+        case 'merge':
+          sortFunction = mergeSortSteps;
+          break;
+        default:
+          sortFunction = bubbleSortSteps;
+      }
+      
+      // Execute the sorting algorithm with steps
+      const result = sortFunction(data);
+      setSteps(result.steps);
+      setTotalSteps(result.steps.length);
+      setStats(result.stats);
+      setCurrentStep(0); // Reset to the first step of the new algorithm
+    }
   };
   
   const handleDataSizeChange = (e) => {
@@ -113,8 +145,44 @@ function App() {
   
   const visualizeSorting = useCallback(() => {
     if (currentStep < totalSteps && !isPaused) {
-      // Update data with current step
-      setData(steps[currentStep].array);
+      // Update data with current step based on step type
+      if (steps[currentStep].type === 'init' || steps[currentStep].type === 'complete') {
+        // For init and complete steps, use the array directly
+        setData(steps[currentStep].array);
+      } else if (steps[currentStep].type === 'swap') {
+        // For swap steps, update the two swapped elements
+        setData(prevData => {
+          const newData = [...prevData];
+          const [i, j] = steps[currentStep].indices;
+          [newData[i], newData[j]] = [newData[j], newData[i]];
+          return newData;
+        });
+      } else if (steps[currentStep].type === 'compare') {
+        // Compare steps don't change the array data, only visualization
+      } else if (steps[currentStep].type === 'select') {
+        // Select steps don't change the array data, only visualization
+      } else if (steps[currentStep].type === 'shift') {
+        // For shift steps, update the element at the specified index
+        setData(prevData => {
+          const newData = [...prevData];
+          newData[steps[currentStep].index] = steps[currentStep].value;
+          return newData;
+        });
+      } else if (steps[currentStep].type === 'insert') {
+        // For insert steps, update the element at the specified index
+        setData(prevData => {
+          const newData = [...prevData];
+          newData[steps[currentStep].index] = steps[currentStep].value;
+          return newData;
+        });
+      } else if (steps[currentStep].type === 'merge') {
+        // For merge steps, update the element at the specified index
+        setData(prevData => {
+          const newData = [...prevData];
+          newData[steps[currentStep].index] = steps[currentStep].value;
+          return newData;
+        });
+      }
       
       // Schedule next step
       sortingTimeoutRef.current = setTimeout(() => {
@@ -188,7 +256,7 @@ function App() {
               id="algorithm-select" 
               value={algorithm} 
               onChange={handleAlgorithmChange}
-              disabled={isSorting && !isPaused}
+              disabled={isSorting && !isPaused && currentStep > 0}
             >
               <option value="bubble">Bubble Sort</option>
               <option value="selection">Selection Sort</option>
@@ -246,7 +314,7 @@ function App() {
           <p>Step: {currentStep} / {totalSteps}</p>
         </div>
         
-        <SortingVisualizer data={data} algorithm={getAlgorithmName()} currentStep={steps[currentStep] || { comparing: [], swapping: [] }} />
+        <SortingVisualizer data={data} algorithm={getAlgorithmName()} currentStep={steps[currentStep] || { type: 'init', indices: [] }} />
         
 
       </main>
