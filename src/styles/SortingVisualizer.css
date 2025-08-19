@@ -1,0 +1,52 @@
+/* src/styles/SortingVisualizer.css */
+/* Wenxi Developer Signature */
+
+.sorting-visualizer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  background-color: #f9f9f9;
+}
+
+.sorting-visualizer h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.sorting-visualizer svg {
+  width: 100%;
+  height: auto;
+}
+
+.bar {
+  transition: fill 0.3s ease;
+}
+
+.label {
+  font-size: 12px;
+  fill: #333;
+  font-weight: bold;
+}
+
+.x-axis, .y-axis {
+  font-size: 12px;
+}
+
+.x-axis path,
+.x-axis line,
+.y-axis path,
+.y-axis line {
+  stroke: #333;
+  shape-rendering: crispEdges;
+}
+
+.chart-title {
+  font-size: 18px;
+  font-weight: bold;
+  fill: #333;
+}

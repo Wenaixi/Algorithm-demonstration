@@ -1,63 +1,54 @@
 // src/App.jsx
 // Wenxi Developer Signature
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import SortingVisualizer from './components/SortingVisualizer';
-import PerformanceChart from './components/PerformanceChart';
-import StockChart from './components/StockChart';
 import { generateRandomArray } from './utils/dataGenerator';
-import { bubbleSort } from './algorithms/bubbleSort';
-import { selectionSort } from './algorithms/selectionSort';
-import { insertionSort } from './algorithms/insertionSort';
-import { quickSort } from './algorithms/quickSort';
-import { mergeSort } from './algorithms/mergeSort';
+import { bubbleSortSteps } from './algorithms/bubbleSort';
+import { selectionSortSteps } from './algorithms/selectionSort';
+import { insertionSortSteps } from './algorithms/insertionSort';
+import { quickSortSteps } from './algorithms/quickSort';
+import { mergeSortSteps } from './algorithms/mergeSort';
 
 function App() {
   const [data, setData] = useState([]);
   const [algorithm, setAlgorithm] = useState('bubble');
   const [dataArraySize, setDataArraySize] = useState(20);
-  const [speed, setSpeed] = useState(100);
+  const [speed, setSpeed] = useState(0);
   const [isSorting, setIsSorting] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [stats, setStats] = useState({ comparisons: 0, swaps: 0, time: 0 });
-  const [performanceData, setPerformanceData] = useState([]);
-  const [showPerformanceChart, setShowPerformanceChart] = useState(false);
-  const [stockData, setStockData] = useState([]);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [totalSteps, setTotalSteps] = useState(0);
+  const [steps, setSteps] = useState([]);
+  
+  const sortingTimeoutRef = useRef(null);
   
   const resetData = useCallback(() => {
     const newData = generateRandomArray(dataArraySize);
     setData(newData);
     setStats({ comparisons: 0, swaps: 0, time: 0 });
-    setPerformanceData([]);
-    setShowPerformanceChart(false);
+    // Removed unused state setters
+    setCurrentStep(0);
+    setTotalSteps(0);
+    setSteps([]);
+    setIsSorting(false);
+    setIsPaused(false);
+    
+    // Clear any existing timeouts
+    if (sortingTimeoutRef.current) {
+      clearTimeout(sortingTimeoutRef.current);
+      sortingTimeoutRef.current = null;
+    }
   }, [dataArraySize]);
   
   // Initialize with random data
   useEffect(() => {
     resetData();
-    generateStockData();
   }, [resetData]);
   
-  const generateStockData = () => {
-    // Generate sample stock data for the last 30 days
-    const today = new Date();
-    const stockData = [];
-    
-    for (let i = 29; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      
-      // Generate a random price between 100 and 200
-      const price = (Math.random() * 100 + 100).toFixed(2);
-      
-      stockData.push({
-        date: date.toISOString().split('T')[0],
-        price: price
-      });
-    }
-    
-    setStockData(stockData);
-  };
+
   
   const handleAlgorithmChange = (e) => {
     setAlgorithm(e.target.value);
@@ -65,7 +56,7 @@ function App() {
   
   const handleDataSizeChange = (e) => {
     const size = parseInt(e.target.value);
-    if (size >= 5 && size <= 100) {
+    if (size >= 5 && size <= 1000) {
       setDataArraySize(size);
     }
   };
@@ -75,67 +66,96 @@ function App() {
   };
   
   const handleSort = () => {
-    if (isSorting) return;
+    if (isSorting && !isPaused) return;
+    
+    // If we're paused, resume sorting
+    if (isPaused) {
+      setIsPaused(false);
+      visualizeSorting();
+      return;
+    }
     
     setIsSorting(true);
+    setIsPaused(false);
+    setCurrentStep(0);
     
-    // Select the appropriate sorting algorithm
+    // Select the appropriate sorting algorithm with steps
     let sortFunction;
     switch (algorithm) {
       case 'bubble':
-        sortFunction = bubbleSort;
+        sortFunction = bubbleSortSteps;
         break;
       case 'selection':
-        sortFunction = selectionSort;
+        sortFunction = selectionSortSteps;
         break;
       case 'insertion':
-        sortFunction = insertionSort;
+        sortFunction = insertionSortSteps;
         break;
       case 'quick':
-        sortFunction = quickSort;
+        sortFunction = quickSortSteps;
         break;
       case 'merge':
-        sortFunction = mergeSort;
+        sortFunction = mergeSortSteps;
         break;
       default:
-        sortFunction = bubbleSort;
+        sortFunction = bubbleSortSteps;
     }
     
-    // Execute the sorting algorithm
+    // Execute the sorting algorithm with steps
     const result = sortFunction(data);
-    setData(result.sortedArray);
+    setSteps(result.steps);
+    setTotalSteps(result.steps.length);
     setStats(result.stats);
-    setIsSorting(false);
+    
+    // Start visualization
+    visualizeSorting();
   };
   
-  const compareAlgorithms = () => {
-    if (isSorting) return;
+  const visualizeSorting = useCallback(() => {
+    if (currentStep < totalSteps && !isPaused) {
+      // Update data with current step
+      setData(steps[currentStep].array);
+      
+      // Schedule next step
+      sortingTimeoutRef.current = setTimeout(() => {
+        setCurrentStep(prevStep => prevStep + 1);
+      }, Math.max(0, speed)); // Invert speed so higher value means faster, with minimum delay of 0ms at max speed (500ms at min speed of 0ms)
+    } else if (currentStep >= totalSteps) {
+      // Sorting is complete
+      setIsSorting(false);
+      setIsPaused(false);
+    }
+  }, [currentStep, isPaused, speed, steps, totalSteps]);
+  
+  // Effect to handle step changes
+  useEffect(() => {
+    if (isSorting && !isPaused && currentStep < totalSteps) {
+      visualizeSorting();
+    }
     
-    setIsSorting(true);
+    // Cleanup timeout on unmount or when dependencies change
+    return () => {
+      if (sortingTimeoutRef.current) {
+        clearTimeout(sortingTimeoutRef.current);
+      }
+    };
+  }, [currentStep, isSorting, isPaused, totalSteps, steps, speed, visualizeSorting]);
+  
+  const handlePause = () => {
+    setIsPaused(true);
     
-    // Create a copy of the data for consistent comparison
-    const dataCopy = [...data];
-    
-    // Run all algorithms and collect performance data
-    const bubbleResult = bubbleSort(dataCopy);
-    const selectionResult = selectionSort(dataCopy);
-    const insertionResult = insertionSort(dataCopy);
-    const quickResult = quickSort(dataCopy);
-    const mergeResult = mergeSort(dataCopy);
-    
-    // Create performance data array
-    const perfData = [
-      { algorithm: 'Bubble', time: bubbleResult.stats.time },
-      { algorithm: 'Selection', time: selectionResult.stats.time },
-      { algorithm: 'Insertion', time: insertionResult.stats.time },
-      { algorithm: 'Quick', time: quickResult.stats.time },
-      { algorithm: 'Merge', time: mergeResult.stats.time }
-    ];
-    
-    setPerformanceData(perfData);
-    setShowPerformanceChart(true);
-    setIsSorting(false);
+    // Clear any existing timeouts
+    if (sortingTimeoutRef.current) {
+      clearTimeout(sortingTimeoutRef.current);
+      sortingTimeoutRef.current = null;
+    }
   };
+  
+  const handleReset = () => {
+    resetData();
+  };
+  
+
   
   const getAlgorithmName = () => {
     switch (algorithm) {
@@ -168,7 +188,7 @@ function App() {
               id="algorithm-select" 
               value={algorithm} 
               onChange={handleAlgorithmChange}
-              disabled={isSorting}
+              disabled={isSorting && !isPaused}
             >
               <option value="bubble">Bubble Sort</option>
               <option value="selection">Selection Sort</option>
@@ -184,10 +204,10 @@ function App() {
               type="range" 
               id="data-size" 
               min="5" 
-              max="100" 
+              max="1000" 
               value={dataArraySize} 
               onChange={handleDataSizeChange}
-              disabled={isSorting}
+              disabled={isSorting && !isPaused}
             />
           </div>
           
@@ -196,24 +216,25 @@ function App() {
             <input 
               type="range" 
               id="speed" 
-              min="10" 
-              max="1000" 
+              min="0" 
+              max="500" 
               value={speed} 
               onChange={handleSpeedChange}
-              disabled={isSorting}
+              disabled={isSorting && !isPaused}
             />
           </div>
           
           <div className="control-group buttons">
-            <button onClick={handleSort} disabled={isSorting}>
-              {isSorting ? 'Sorting...' : 'Sort'}
+            <button onClick={handleSort} disabled={isSorting && !isPaused}>
+              {isSorting && !isPaused ? 'Sorting...' : isPaused ? 'Resume' : 'Sort'}
             </button>
-            <button onClick={compareAlgorithms} disabled={isSorting}>
-              Compare Algorithms
+            <button onClick={handlePause} disabled={!isSorting || isPaused}>
+              Pause
             </button>
-            <button onClick={resetData} disabled={isSorting}>
+            <button onClick={handleReset} disabled={isSorting && !isPaused}>
               Reset Data
             </button>
+
           </div>
         </div>
         
@@ -222,15 +243,12 @@ function App() {
           <p>Comparisons: {stats.comparisons}</p>
           <p>Swaps: {stats.swaps}</p>
           <p>Time: {stats.time.toFixed(2)}ms</p>
+          <p>Step: {currentStep} / {totalSteps}</p>
         </div>
         
-        <SortingVisualizer data={data} algorithm={getAlgorithmName()} />
+        <SortingVisualizer data={data} algorithm={getAlgorithmName()} currentStep={steps[currentStep] || { comparing: [], swapping: [] }} />
         
-        {showPerformanceChart && (
-          <PerformanceChart performanceData={performanceData} />
-        )}
-        
-        <StockChart data={stockData} />
+
       </main>
     </div>
   );

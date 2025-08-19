@@ -1,47 +1,71 @@
 # Algorithm Demonstration
 
-This project is a sorting algorithm visualization tool designed to demonstrate how different sorting algorithms work. It provides an interactive visualization of classic sorting algorithms including Bubble Sort, Selection Sort, Insertion Sort, Quick Sort, and Merge Sort.
+Interactive visualization of sorting algorithms.
 
 ## Features
 
-- Visualization of 5 classic sorting algorithms
-- Interactive controls for algorithm selection
-- Adjustable data size and sorting speed
-- Performance statistics (comparisons, swaps, execution time)
-- Multiple data set types (random, sorted, reverse sorted, etc.)
+- Visualize popular sorting algorithms including Bubble Sort, Selection Sort, Insertion Sort, Merge Sort, and Quick Sort
+- Interactive controls to adjust sorting speed and array size
+- Clean and intuitive user interface
 
 ## Algorithms Implemented
 
-1. **Bubble Sort** - A simple comparison-based algorithm
-2. **Selection Sort** - An in-place comparison sorting algorithm
-3. **Insertion Sort** - A simple sorting algorithm that builds the final sorted array one item at a time
-4. **Quick Sort** - An efficient divide-and-conquer sorting algorithm
-5. **Merge Sort** - An efficient, stable, comparison-based, divide-and-conquer sorting algorithm
+1. **Bubble Sort** - A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements and swaps them if they are in the wrong order.
+2. **Selection Sort** - An in-place comparison sorting algorithm that divides the input list into a sorted and an unsorted region.
+3. **Insertion Sort** - A simple sorting algorithm that builds the final sorted array one item at a time.
+4. **Merge Sort** - An efficient, stable, divide-and-conquer sorting algorithm.
+5. **Quick Sort** - An efficient sorting algorithm that uses a divide-and-conquer approach.
 
-## Technology Stack
+## Installation
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/your-username/Algorithm-demonstration.git
+   ```
+
+2. Navigate to the project directory:
+   ```
+   cd Algorithm-demonstration
+   ```
+
+3. Install dependencies:
+   ```
+   npm install
+   ```
+
+## Usage
+
+To start the development server:
+```
+npm run dev
+```
+
+To build for production:
+```
+npm run build
+```
+
+To preview the production build:
+```
+npm run preview
+```
+
+## Technologies Used
 
 - React
 - D3.js
 - Vite
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies: `npm install --registry https://registry.npmmirror.com/`
-3. Run the development server: `npm run dev`
-4. Open your browser to http://localhost:3003
-
-## Project Structure
-
-- `src/algorithms/` - Implementation of sorting algorithms
-- `src/components/` - React components
-- `src/visualizations/` - D3.js visualization components
-- `src/utils/` - Utility functions
-
-## Developer
-
-This project was developed following the Wenxi Development System Core 11 Principles.
+- JavaScript (ES6+)
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+
+## Acknowledgments
+
+- Thanks to the creators of the algorithms visualized in this project
+- Inspired by various algorithm visualization tools available online

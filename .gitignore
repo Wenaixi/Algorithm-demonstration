@@ -24,5 +24,4 @@ dist-ssr
 *.sw?
 
 # Custom rule files
-.rule
 .rule/
