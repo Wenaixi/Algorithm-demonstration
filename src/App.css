@@ -136,4 +136,61 @@ button:disabled {
   .control-group.buttons button {
     width: 100%;
   }
+  
+  /* Performance statistics adjustments for mobile */
+  .stats {
+    position: relative;
+    background-color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 80px; /* Ensure minimum height to display content */
+    color: #333; /* Ensure text is visible on mobile */
+  }
+  
+  .stats p {
+    flex: 1 1 50%;
+    margin: 5px 0;
+    font-size: 0.9rem;
+    text-align: center;
+    word-break: break-word; /* Ensure long words break to fit container */
+    color: #333; /* Ensure text is visible on mobile */
+  }
+}
+
+/* Additional mobile optimization for very small screens */
+@media (max-width: 480px) {
+  .App-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .App-header p {
+    font-size: 0.9rem;
+  }
+  
+  main {
+    padding: 10px;
+  }
+  
+  .controls {
+    padding: 10px;
+  }
+  
+  .stats {
+    padding: 10px;
+  }
+  
+  .stats h3 {
+    font-size: 1.1rem;
+  }
+  
+  .stats p {
+    font-size: 0.9rem;
+  }
 }
