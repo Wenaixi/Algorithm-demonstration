@@ -36,8 +36,12 @@
 }
 
 .x-axis, .y-axis {
-  font-size: 12px;
-  fill: #333; /* Ensure axis labels are visible */
+  font-size: 8px; /* Further reduce font size to make axis narrower */
+  fill: #333; /* Set axis label color to dark gray */
+}
+
+.x-axis text, .y-axis text {
+  fill: #333; /* Ensure axis label text color is dark gray */
 }
 
 .x-axis path,
@@ -68,8 +72,12 @@
   }
   
   .x-axis, .y-axis {
-    font-size: 10px; /* Smaller font size for axes on mobile */
+    font-size: 6px; /* Further reduce font size for axes on mobile */
     fill: #333; /* Ensure axis labels are visible on mobile */
+  }
+  
+  .x-axis text, .y-axis text {
+    fill: #333; /* Ensure axis label text color is dark gray on mobile */
   }
   
   .chart-title {
@@ -88,7 +96,11 @@
   }
   
   .x-axis, .y-axis {
-    font-size: 8px; /* Even smaller font size for axes on very small screens */
+    font-size: 5px; /* Further reduce font size for axes on very small screens */
     fill: #333; /* Ensure axis labels are visible on very small screens */
+  }
+  
+  .x-axis text, .y-axis text {
+    fill: #333; /* Ensure axis label text color is dark gray on very small screens */
   }
 }

@@ -1,13 +1,35 @@
 // src/components/SortingVisualizer.jsx
 // Wenxi Developer Signature
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useLayoutEffect, useState } from 'react';
 import * as d3 from 'd3';
 import '../styles/SortingVisualizer.css';
 
 const SortingVisualizer = ({ data, algorithm, currentStep }) => {
   const svgRef = useRef();
   const containerRef = useRef();
+  const [dimensions, setDimensions] = useState({ width: 0, height: 400 });
+  
+  // Handle window resize
+  useLayoutEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        setDimensions({ 
+          width: containerRef.current.clientWidth, 
+          height: 400 
+        });
+      }
+    };
+    
+    // Initial dimensions
+    updateDimensions();
+    
+    // Add resize event listener
+    window.addEventListener('resize', updateDimensions);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, []);
   
   // Visualization effect
   useEffect(() => {
@@ -17,8 +39,8 @@ const SortingVisualizer = ({ data, algorithm, currentStep }) => {
     d3.select(svgRef.current).selectAll("*").remove();
     
     // Get container dimensions
-    const containerWidth = containerRef.current.clientWidth;
-    const containerHeight = 400;
+    const containerWidth = dimensions.width;
+    const containerHeight = dimensions.height;
     const margin = { top: 20, right: 30, bottom: 60, left: 40 };
     const width = containerWidth - margin.left - margin.right;
     const height = containerHeight - margin.top - margin.bottom;
@@ -117,7 +139,7 @@ const SortingVisualizer = ({ data, algorithm, currentStep }) => {
         return colorScale(i);
       }
     });
-  }, [data, algorithm, currentStep]); // Re-run when data, algorithm, or currentStep changes
+  }, [data, algorithm, currentStep, dimensions]); // Re-run when data, algorithm, currentStep, or dimensions change
   
   return (
     <div className="sorting-visualizer" ref={containerRef}>

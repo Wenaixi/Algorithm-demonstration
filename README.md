@@ -69,7 +69,3 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for de
 
 - Thanks to the creators of the algorithms visualized in this project
 - Inspired by various algorithm visualization tools available online
-
-## Changelog
-
-- Fixed axis label visibility on mobile devices by explicitly setting the fill color in CSS
