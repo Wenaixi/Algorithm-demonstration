@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <span className="author">Wenxi</span>
+        <span className="author">Wenxi-v1.0.0</span>
         <a 
           href="https://github.com/Wenaixi/Algorithm-demonstration" 
           target="_blank" 

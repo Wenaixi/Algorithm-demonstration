@@ -13,16 +13,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 20px;
   font-size: 14px;
   color: #ffffff;
+  box-sizing: border-box;
 }
 
 .author {
   font-weight: bold;
   color: #ffffff;
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .footer-content {
+    max-width: 100%;
+    padding: 0 25px;
+  }
 }
 
 .github-link {

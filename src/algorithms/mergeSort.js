@@ -1,33 +1,132 @@
 // Merge Sort Algorithm
 
-export function mergeSort(array) {
-  if (array.length <= 1) {
-    return array;
+// Threshold for switching to insertion sort
+const INSERTION_SORT_THRESHOLD = 10;
+
+// Insertion sort for small arrays
+function insertionSort(arr, left, right) {
+  for (let i = left + 1; i <= right; i++) {
+    const temp = arr[i];
+    let j = i - 1;
+    while (j >= left && arr[j] > temp) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+    arr[j + 1] = temp;
   }
-  
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
-  
-  return merge(mergeSort(left), mergeSort(right));
 }
 
-function merge(left, right) {
-  let result = [];
-  let leftIndex = 0;
-  let rightIndex = 0;
-  
-  while (leftIndex < left.length && rightIndex < right.length) {
-    if (left[leftIndex] < right[rightIndex]) {
-      result.push(left[leftIndex]);
-      leftIndex++;
-    } else {
-      result.push(right[rightIndex]);
-      rightIndex++;
+// Insertion sort for small arrays with steps
+function insertionSortSteps(arr, left, right, steps, stats, startIdx = 0) {
+  for (let i = left + 1; i <= right; i++) {
+    const temp = arr[i];
+    let j = i - 1;
+    
+    // Add step for comparison
+    steps.push({ 
+      type: 'compare',
+      indices: [startIdx + i, startIdx + j]
+    });
+    
+    while (j >= left && arr[j] > temp) {
+      arr[j + 1] = arr[j];
+      stats.swaps++;
+      
+      // Add step for shift operation
+      steps.push({ 
+        type: 'shift',
+        indices: [startIdx + j, startIdx + j + 1]
+      });
+      
+      j--;
+      
+      // Add step for next comparison if applicable
+      if (j >= left) {
+        steps.push({ 
+          type: 'compare',
+          indices: [startIdx + i, startIdx + j]
+        });
+      }
+    }
+    
+    arr[j + 1] = temp;
+    
+    // Add step for insertion
+    if (j + 1 !== i) {
+      stats.swaps++;
+      steps.push({ 
+        type: 'insert',
+        indices: [startIdx + i, startIdx + j + 1]
+      });
     }
   }
+}
+
+export function mergeSort(array) {
+  // Create a copy of the array to avoid mutating the original
+  const arr = [...array];
   
-  return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+  // Call the optimized merge sort function
+  mergeSortOptimized(arr, 0, arr.length - 1);
+  
+  return arr;
+}
+
+// Optimized merge sort implementation
+function mergeSortOptimized(arr, left, right) {
+  if (left < right) {
+    // Use insertion sort for small subarrays
+    if (right - left + 1 < INSERTION_SORT_THRESHOLD) {
+      insertionSort(arr, left, right);
+      return;
+    }
+    
+    const mid = Math.floor((left + right) / 2);
+    
+    // Recursively sort first and second halves
+    mergeSortOptimized(arr, left, mid);
+    mergeSortOptimized(arr, mid + 1, right);
+    
+    // Merge the sorted halves only if needed
+    if (arr[mid] > arr[mid + 1]) {
+      mergeInPlace(arr, left, mid, right);
+    }
+  }
+}
+
+// In-place merge function
+function mergeInPlace(arr, left, mid, right) {
+  // Create temporary arrays for the two subarrays
+  const leftArr = arr.slice(left, mid + 1);
+  const rightArr = arr.slice(mid + 1, right + 1);
+  
+  let i = 0, j = 0, k = left;
+  
+  // Merge the temporary arrays back into arr[left..right]
+  while (i < leftArr.length && j < rightArr.length) {
+    if (leftArr[i] <= rightArr[j]) {
+      arr[k] = leftArr[i];
+      i++;
+    } else {
+      arr[k] = rightArr[j];
+      j++;
+    }
+    k++;
+  }
+  
+  // Copy the remaining elements of leftArr[], if any
+  while (i < leftArr.length) {
+    arr[k] = leftArr[i];
+    i++;
+    k++;
+  }
+  
+  // Copy the remaining elements of rightArr[], if any
+  while (j < rightArr.length) {
+    arr[k] = rightArr[j];
+    j++;
+    k++;
+  }
 }
 
 /**
@@ -55,15 +154,38 @@ export function mergeSortSteps(array) {
   // Create a copy of the array to avoid mutating the original
   const arr = [...array];
   
-  // Internal recursive function
-  function mergeSortRecursive(arr, startIdx = 0) {
+  // Optimized recursive function with insertion sort for small arrays
+  function mergeSortRecursiveOptimized(arr, startIdx = 0) {
     if (arr.length <= 1) {
       return { result: arr, startIdx };
     }
     
+    // Use insertion sort for small subarrays
+    if (arr.length < INSERTION_SORT_THRESHOLD) {
+      // Create a copy of the subarray to sort
+      const subArray = [...arr];
+      
+      // Add step for insertion sort
+      steps.push({ 
+        type: 'info',
+        message: `Using insertion sort for small subarray [${startIdx}, ${startIdx + arr.length - 1}]`
+      });
+      
+      // Sort the subarray with steps
+      insertionSortSteps(subArray, 0, subArray.length - 1, steps, stats, startIdx);
+      
+      // Add step for completion of insertion sort
+      steps.push({ 
+        type: 'info',
+        message: `Completed insertion sort for subarray [${startIdx}, ${startIdx + arr.length - 1}]`
+      });
+      
+      return { result: subArray, startIdx };
+    }
+    
     const mid = Math.floor(arr.length / 2);
-    const leftObj = mergeSortRecursive(arr.slice(0, mid), startIdx);
-    const rightObj = mergeSortRecursive(arr.slice(mid), startIdx + mid);
+    const leftObj = mergeSortRecursiveOptimized(arr.slice(0, mid), startIdx);
+    const rightObj = mergeSortRecursiveOptimized(arr.slice(mid), startIdx + mid);
     
     return merge(leftObj, rightObj);
   }
@@ -128,8 +250,8 @@ export function mergeSortSteps(array) {
     return { result, startIdx: leftStart };
   }
   
-  // Execute the merge sort
-  const sortedObj = mergeSortRecursive(arr);
+  // Execute the optimized merge sort
+  const sortedObj = mergeSortRecursiveOptimized(arr);
   const sortedArray = sortedObj.result;
   
   const endTime = performance.now();

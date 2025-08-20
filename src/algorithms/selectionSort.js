@@ -1,10 +1,26 @@
 // Selection Sort Algorithm
 
+/**
+ * Basic selection sort implementation
+ * 
+ * This implementation finds the minimum element in the unsorted portion of the array
+ * and swaps it with the first element of the unsorted portion. This process is
+ * repeated until the entire array is sorted.
+ * 
+ * Time Complexity: O(n^2) in all cases
+ * Space Complexity: O(1)
+ * 
+ * @param {number[]} array - Array of numbers to sort
+ * @returns {number[]} - Sorted array
+ */
 export function selectionSort(array) {
+  // Create a copy of the array to avoid mutating the original
   const arr = [...array];
   const n = arr.length;
   
+  // Traverse through all array elements
   for (let i = 0; i < n - 1; i++) {
+    // Find the minimum element in the remaining unsorted array
     let minIndex = i;
     
     for (let j = i + 1; j < n; j++) {
@@ -13,6 +29,9 @@ export function selectionSort(array) {
       }
     }
     
+    // Swap the found minimum element with the first element
+    // Optimization: Only swap if minIndex is different from i
+    // This also handles the case where the array is already sorted
     if (minIndex !== i) {
       [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
@@ -49,29 +68,31 @@ export function selectionSortSteps(array) {
   for (let i = 0; i < n - 1; i++) {
     let minIndex = i;
     
+    // Add step for selection start
+    steps.push({ type: 'selectionStart', index: i });
+    
     // Find the minimum element in the remaining unsorted array
     for (let j = i + 1; j < n; j++) {
-      stats.comparisons++;
-      
-      // Add step for comparison (compact representation)
+      // Add step for comparison
       steps.push({ type: 'compare', indices: [j, minIndex] });
       
       if (arr[j] < arr[minIndex]) {
         minIndex = j;
       }
+      stats.comparisons++;
     }
+    
+    // Add step for selection end
+    steps.push({ type: 'selectionEnd', index: i });
     
     // Swap the found minimum element with the first element
     if (minIndex !== i) {
       [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
       stats.swaps++;
       
-      // Add step for swap (compact representation)
+      // Add step for swap
       steps.push({ type: 'swap', indices: [i, minIndex] });
     }
-    
-    // Add step for selection (using array update)
-    steps.push({ type: 'selection', array: [...arr] });
   }
   
   const endTime = performance.now();

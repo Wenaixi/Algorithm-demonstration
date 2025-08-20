@@ -95,6 +95,34 @@ const SortingVisualizer = ({ data, algorithm, currentStep }) => {
         else if (currentStep.type === 'select' && currentStep.indices.includes(i)) {
           return "#2196f3"; // Blue for selecting
         }
+        // Highlight counting elements
+        else if (currentStep.type === 'count') {
+          // For counting sort, we could highlight the value being counted
+          // For now, we'll just use a different color
+          return "#9c27b0"; // Purple for counting
+        }
+        // Highlight placing elements
+        else if (currentStep.type === 'place') {
+          // For counting sort, highlight the position where an element is placed
+          if (currentStep.index === i) {
+            return "#4caf50"; // Green for placing
+          }
+        }
+        // Highlight shuffling elements
+        else if (currentStep.type === 'shuffle' && currentStep.indices.includes(i)) {
+          return "#ffeb3b"; // Yellow for shuffling
+        }
+        // Highlight copying elements
+        else if (currentStep.type === 'copy') {
+          // For radix sort, highlight the position where an element is copied
+          if (currentStep.index === i) {
+            return "#ff5722"; // Deep orange for copying
+          }
+        }
+        // Highlight timeout elements
+        else if (currentStep.type === 'timeout') {
+          return "#607d8b"; // Blue grey for timeout
+        }
         // Default color
         else {
           return colorScale(i);
@@ -134,6 +162,34 @@ const SortingVisualizer = ({ data, algorithm, currentStep }) => {
       else if (currentStep.type === 'select' && currentStep.indices.includes(i)) {
         return "#2196f3"; // Blue for selecting
       }
+      // Highlight counting elements
+      else if (currentStep.type === 'count') {
+        // For counting sort, we could highlight the value being counted
+        // For now, we'll just use a different color
+        return "#9c27b0"; // Purple for counting
+      }
+      // Highlight placing elements
+      else if (currentStep.type === 'place') {
+        // For counting sort, highlight the position where an element is placed
+        if (currentStep.index === i) {
+          return "#4caf50"; // Green for placing
+        }
+      }
+      // Highlight shuffling elements
+      else if (currentStep.type === 'shuffle' && currentStep.indices.includes(i)) {
+        return "#ffeb3b"; // Yellow for shuffling
+      }
+      // Highlight copying elements
+      else if (currentStep.type === 'copy') {
+        // For radix sort, highlight the position where an element is copied
+        if (currentStep.index === i) {
+          return "#ff5722"; // Deep orange for copying
+        }
+      }
+      // Highlight timeout elements
+      else if (currentStep.type === 'timeout') {
+        return "#607d8b"; // Blue grey for timeout
+      }
       // Default color
       else {
         return colorScale(i);
@@ -144,7 +200,7 @@ const SortingVisualizer = ({ data, algorithm, currentStep }) => {
   return (
     <div className="sorting-visualizer" ref={containerRef}>
       <h2>Sorting Visualization</h2>
-      <svg ref={svgRef}></svg>
+      <svg ref={svgRef} style={{ width: '100%', height: '100%', display: 'block', background: 'rgba(255, 255, 255, 0.7)', borderRadius: '4px' }}></svg>
     </div>
   );
 };

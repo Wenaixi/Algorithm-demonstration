@@ -16,9 +16,10 @@ body {
 }
 
 .App-header {
-  background-color: #000000;
+  background: linear-gradient(135deg, #000000, #1a1a1a, #000000);
   padding: 20px;
   color: white;
+  box-shadow: 0 4px 8px rgba(0, 255, 255, 0.2);
 }
 
 .App-header h1 {
@@ -32,19 +33,20 @@ body {
 }
 
 main {
-  max-width: 1200px;
+  width: 100%;
   margin: 20px auto;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 15px;
   justify-content: center;
-  margin-bottom: 30px;
-  padding: 20px;
-  background-color: white;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.7);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -64,6 +66,31 @@ main {
 
 .control-group input[type="range"] {
   width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px;
+  border-radius: 5px;
+  background: #cccccc; /* 灰色轨道 */
+  outline: none;
+}
+
+.control-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000000; /* 黑色圆球 */
+  cursor: pointer;
+}
+
+.control-group input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #000000; /* 黑色圆球 */
+  cursor: pointer;
+  border: none;
 }
 
 .control-group select {
@@ -76,32 +103,84 @@ main {
   flex-direction: row;
   gap: 10px;
   min-width: auto;
+  margin-top: 20px;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 button {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
-  background-color: #4caf50;
+  background: linear-gradient(135deg, #000000, #333333, #000000);
   color: white;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 255, 255, 0.3);
 }
 
 button:hover:not(:disabled) {
-  background-color: #45a049;
+  background: linear-gradient(135deg, #1a1a1a, #444444, #1a1a1a);
+  box-shadow: 0 4px 8px rgba(0, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 button:disabled {
-  background-color: #cccccc;
+  background: linear-gradient(135deg, #222222, #555555, #222222);
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* EditableNumber component styles */
+.editable-number {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.editable-number:hover {
+  background-color: #f0f0f0;
+}
+
+.editable-number__label {
+  font-weight: bold;
+  color: #333;
+}
+
+.editable-number__value {
+  min-width: 40px;
+  text-align: center;
+}
+
+.editable-number__unit {
+  color: #666;
+}
+
+.editable-number__input {
+  width: 80px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.editable-number__input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
 }
 
 .stats {
   margin: 20px 0;
   padding: 15px;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.7);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
@@ -116,21 +195,111 @@ button:disabled {
   font-size: 1rem;
 }
 
+/* 算法选择下拉菜单 */
+.algorithm-select {
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.7);
+  color: #333;
+}
 
+.algorithm-select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.algorithm-option {
+  padding: 8px;
+}
+
+.algorithm-option .english-name {
+  color: blue;
+}
+
+/* 信息按钮 */
+.info-button {
+  padding: 5px 10px;
+  font-size: 12px;
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.info-button:hover {
+  background-color: #333333;
+}
+
+.info-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* 响应式设计优化 */
+@media (max-width: 1200px) {
+  main {
+    padding: 15px;
+  }
+  
+  .controls {
+    gap: 12px;
+    padding: 12px;
+  }
+  
+  .control-group {
+    min-width: 130px;
+  }
+}
+
+@media (max-width: 992px) {
+  .App-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .App-header p {
+    font-size: 0.95rem;
+  }
+  
+  main {
+    padding: 12px;
+  }
+  
+  .controls {
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .control-group {
+    min-width: 120px;
+  }
+  
+  .stats {
+    padding: 12px;
+  }
+}
 
 @media (max-width: 768px) {
   .controls {
     flex-direction: column;
     align-items: center;
+    gap: 15px;
+    padding: 15px;
   }
   
   .control-group {
     width: 100%;
+    min-width: auto;
   }
   
   .control-group.buttons {
     flex-direction: column;
     width: 100%;
+    gap: 10px;
   }
   
   .control-group.buttons button {
@@ -140,18 +309,18 @@ button:disabled {
   /* Performance statistics adjustments for mobile */
   .stats {
     position: relative;
-    background-color: white;
-    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 15px;
     border-radius: 8px;
-    margin-top: 10px;
+    margin-top: 15px;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     font-size: 0.9rem;
     width: 100%;
     box-sizing: border-box;
-    min-height: 80px; /* Ensure minimum height to display content */
-    color: #333; /* Ensure text is visible on mobile */
+    min-height: 80px;
+    color: #333;
   }
   
   .stats p {
@@ -159,15 +328,27 @@ button:disabled {
     margin: 5px 0;
     font-size: 0.9rem;
     text-align: center;
-    word-break: break-word; /* Ensure long words break to fit container */
-    color: #333; /* Ensure text is visible on mobile */
+    word-break: break-word;
+    color: #333;
+  }
+  
+  /* Button group adjustments for mobile */
+  .control-group.buttons {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
   }
 }
 
-/* Additional mobile optimization for very small screens */
-@media (max-width: 480px) {
+/* Additional mobile optimization for small screens */
+@media (max-width: 576px) {
+  .App-header {
+    padding: 15px;
+  }
+  
   .App-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
   
   .App-header p {
@@ -180,10 +361,16 @@ button:disabled {
   
   .controls {
     padding: 10px;
+    gap: 12px;
+  }
+  
+  .control-group {
+    width: 100%;
   }
   
   .stats {
-    padding: 10px;
+    padding: 12px;
+    margin-top: 12px;
   }
   
   .stats h3 {
@@ -191,37 +378,66 @@ button:disabled {
   }
   
   .stats p {
+    font-size: 0.85rem;
+  }
+  
+  button {
+    padding: 8px 16px;
     font-size: 0.9rem;
+  }
+  
+  .control-group label {
+    font-size: 0.95rem;
   }
 }
 
 /* Additional mobile optimization for very small screens */
-@media (max-width: 480px) {
+@media (max-width: 400px) {
+  .App-header {
+    padding: 12px;
+  }
+  
   .App-header h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
   
   .App-header p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
   
   main {
-    padding: 10px;
+    padding: 8px;
   }
   
   .controls {
-    padding: 10px;
+    padding: 8px;
+    gap: 10px;
   }
   
   .stats {
     padding: 10px;
+    margin-top: 10px;
   }
   
   .stats h3 {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
   
   .stats p {
+    font-size: 0.8rem;
+  }
+  
+  button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+  
+  .control-group label {
     font-size: 0.9rem;
+  }
+  
+  .editable-number__input {
+    width: 70px;
+    font-size: 12px;
   }
 }
